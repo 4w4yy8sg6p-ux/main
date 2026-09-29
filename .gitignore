@@ -1,0 +1,5 @@
+node_modules/
+out/
+# исходное видео занятия и сгенерированный звук (scripts/make_audio.py)
+public/lesson.mp4
+public/*.wav
