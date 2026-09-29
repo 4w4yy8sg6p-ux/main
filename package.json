@@ -5,7 +5,7 @@
   "description": "Ролик о третьем занятии базового курса Нейроджимми: создаём свой стикерпак",
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render StickerLesson out/sticker-lesson.mp4"
+    "render": "remotion render StickerLesson out/sticker-lesson.mp4 --crf=23"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.529",
