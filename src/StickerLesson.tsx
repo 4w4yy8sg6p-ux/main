@@ -26,7 +26,6 @@ for (const [family, file] of [
 }
 
 const FPS = 30;
-const PACK_URL = "t.me/addstickers/Captainsmile111";
 
 const C = {
   violet: "#7b3cff",
@@ -417,52 +416,37 @@ const EndCard: React.FC = () => {
           transform: `scale(${pop(5)})`,
         }}
       >
-        Наш стикерпак
+        Вот наши
         <br />
-        уже в Telegram!
+        стикеры!
       </div>
 
       <div style={{ display: "flex", marginTop: 50, alignItems: "center" }}>
-        <Sticker name="corgi" size={300} rotate={-9} delay={10} />
-        <Sticker name="backpack" size={330} rotate={2} delay={14} />
-        <Sticker name="parrot" size={300} rotate={8} delay={18} />
+        <Sticker name="corgi" size={330} rotate={-9} delay={10} />
+        <Sticker name="backpack" size={370} rotate={2} delay={14} />
+        <Sticker name="parrot" size={330} rotate={8} delay={18} />
       </div>
-      <div style={{ display: "flex", marginTop: -20, gap: 40, alignItems: "center" }}>
-        <Sticker name="chill" size={330} rotate={-5} delay={22} />
-        <Sticker name="smile" size={330} rotate={6} delay={26} />
+      <div style={{ display: "flex", marginTop: -10, gap: 50, alignItems: "center" }}>
+        <Sticker name="chill" size={380} rotate={-5} delay={22} />
+        <Sticker name="smile" size={380} rotate={6} delay={26} />
       </div>
 
       <div
         style={{
           marginTop: 50,
-          display: "flex",
-          alignItems: "center",
-          gap: 36,
           background: "#fff",
-          borderRadius: 40,
-          padding: "28px 40px 28px 28px",
+          color: C.ink,
+          fontFamily: BODY,
+          fontWeight: 900,
+          fontSize: 50,
+          padding: "26px 50px",
+          borderRadius: 36,
           border: `7px solid ${C.ink}`,
           boxShadow: `12px 12px 0 ${C.ink}`,
-          transform: `scale(${pop(30)}) rotate(-1.5deg)`,
+          transform: `scale(${pop(32)}) rotate(-1.5deg)`,
         }}
       >
-        <Img src={staticFile("qr.png")} style={{ width: 250, height: 250 }} />
-        <div style={{ fontFamily: BODY, color: C.ink }}>
-          <div style={{ fontWeight: 900, fontSize: 46, lineHeight: 1.1, whiteSpace: "nowrap" }}>Добавляй к себе 👇</div>
-          <div
-            style={{
-              marginTop: 16,
-              fontWeight: 800,
-              fontSize: 31,
-              color: C.violet,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {PACK_URL.split("/").slice(0, 2).join("/")}/
-            <br />
-            <span style={{ fontSize: 40 }}>{PACK_URL.split("/")[2]}</span>
-          </div>
-        </div>
+        До встречи на занятии! 👋
       </div>
     </AbsoluteFill>
   );
@@ -491,7 +475,7 @@ export const StickerLesson: React.FC = () => {
       </Sequence>
       <Audio
         src={staticFile("music.wav")}
-        volume={(f) => interpolate(f, [0, 15], [0, 0.55], { extrapolateRight: "clamp" })}
+        volume={(f) => interpolate(f, [0, 15], [0, 0.5], { extrapolateRight: "clamp" })}
       />
     </AbsoluteFill>
   );
