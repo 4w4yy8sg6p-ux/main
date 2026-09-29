@@ -11,4 +11,4 @@
 4. `npm run studio` — предпросмотр, `npm run render` — рендер в `out/sticker-lesson.mp4`.
 
 Сцены, подписи и тайминги задаются массивом `CLIPS` в `src/StickerLesson.tsx`.
-Стикеры в `public/stickers/` вырезаны с экранов мониторов из видео занятия.
+Стикеры: исходники в `assets/stickers-src/`, прозрачные PNG с белой обводкой делает `python3 scripts/cutout_stickers.py` (нужны `numpy`, `scipy`, `pillow`).

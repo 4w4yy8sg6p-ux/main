@@ -36,7 +36,7 @@ const C = {
   mint: "#3ee6c4",
 };
 
-type StickerName = "corgi" | "parrot" | "hero";
+type StickerName = "corgi" | "parrot" | "backpack" | "chill" | "smile";
 
 type Clip = {
   from: number; // секунда исходного видео
@@ -83,6 +83,8 @@ const CLIPS: Clip[] = [
     frames: 78,
     title: "Эмоции?",
     sub: "показываем сами 😜",
+    sticker: "chill",
+    stickerAt: 22,
     accent: C.yellow,
   },
   {
@@ -91,7 +93,7 @@ const CLIPS: Clip[] = [
     tag: "Шаг 3",
     title: "Собираем пак",
     sub: "каждый — со своим героем",
-    sticker: "hero",
+    sticker: "backpack",
     stickerAt: 30,
     accent: C.violet,
   },
@@ -100,6 +102,8 @@ const CLIPS: Clip[] = [
     frames: 120,
     title: "Работа кипит!",
     sub: "и немного танцев 🕺",
+    sticker: "smile",
+    stickerAt: 34,
     accent: C.pink,
   },
   {
@@ -221,38 +225,35 @@ const Sticker: React.FC<{
   size: number;
   rotate: number;
   delay?: number;
-  wobble?: boolean;
-}> = ({ name, size, rotate, delay = 0, wobble = true }) => {
+}> = ({ name, size, rotate, delay = 0 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const s = spring({ frame: frame - delay, fps, config: { damping: 8, stiffness: 180, mass: 0.6 } });
-  const w = wobble ? Math.sin((frame - delay) / 9) * 3 : 0;
+  const t = frame - delay;
+  const s = spring({ frame: t, fps, config: { damping: 9, stiffness: 170, mass: 0.6 } });
+  // лёгкое «парение» после появления
+  const floatY = Math.sin(t / 14) * 8 * Math.min(1, Math.max(0, t / 20));
+  const sway = Math.sin(t / 19) * 2.5;
   return (
     <div
       style={{
         width: size,
         height: size,
-        transform: `scale(${s}) rotate(${rotate + (1 - s) * -25 + w}deg)`,
-        background: "#fff",
-        borderRadius: size * 0.16,
-        padding: size * 0.045,
-        boxShadow: "0 24px 50px rgba(0,0,0,0.45)",
-        opacity: s > 0.01 ? 1 : 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transform: `translateY(${floatY + (1 - s) * 80}px) scale(${s}) rotate(${rotate + (1 - s) * -30 + sway}deg)`,
+        opacity: t < 0 ? 0 : 1,
       }}
     >
-      <div
+      <Img
+        src={staticFile(`stickers/${name}.png`)}
         style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: size * 0.12,
-          overflow: "hidden",
+          maxWidth: "100%",
+          maxHeight: "100%",
+          objectFit: "contain",
+          filter: "drop-shadow(0 18px 22px rgba(20,8,48,0.45)) drop-shadow(0 3px 4px rgba(20,8,48,0.35))",
         }}
-      >
-        <Img
-          src={staticFile(`stickers/${name}.jpg`)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scale(1.12)" }}
-        />
-      </div>
+      />
     </div>
   );
 };
@@ -292,8 +293,14 @@ const VideoClip: React.FC<{ clip: Clip; index: number }> = ({ clip, index }) => 
       <Caption clip={clip} />
       {clip.sticker ? (
         <Sequence from={clip.stickerAt ?? 30} layout="none">
-          <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "flex-end", padding: "0 70px 260px 0" }}>
-            <Sticker name={clip.sticker} size={430} rotate={index % 2 ? -7 : 8} />
+          <AbsoluteFill
+            style={{
+              justifyContent: "flex-end",
+              alignItems: index % 2 ? "flex-end" : "flex-start",
+              padding: "0 50px 230px 50px",
+            }}
+          >
+            <Sticker name={clip.sticker} size={470} rotate={index % 2 ? 7 : -7} />
           </AbsoluteFill>
           <Audio src={staticFile("pop.wav")} volume={0.9} />
         </Sequence>
@@ -308,32 +315,24 @@ const VideoClip: React.FC<{ clip: Clip; index: number }> = ({ clip, index }) => 
   );
 };
 
+const FINALE: { name: StickerName; x: number; y: number; size: number; rotate: number; at: number }[] = [
+  { name: "corgi", x: 20, y: 760, size: 380, rotate: -10, at: 28 },
+  { name: "chill", x: 660, y: 700, size: 390, rotate: 9, at: 38 },
+  { name: "backpack", x: 60, y: 1220, size: 400, rotate: -5, at: 48 },
+  { name: "parrot", x: 640, y: 1230, size: 380, rotate: 10, at: 58 },
+  { name: "smile", x: 330, y: 960, size: 430, rotate: 2, at: 70 },
+];
+
 const FinaleStickers: React.FC = () => (
   <AbsoluteFill>
-    <Sequence from={40} layout="none">
-      <AbsoluteFill style={{ padding: "0 0 0 60px", justifyContent: "center" }}>
-        <div style={{ marginTop: 520 }}>
-          <Sticker name="corgi" size={300} rotate={-10} />
+    {FINALE.map((st) => (
+      <Sequence key={st.name} from={st.at} layout="none">
+        <div style={{ position: "absolute", left: st.x, top: st.y }}>
+          <Sticker name={st.name} size={st.size} rotate={st.rotate} />
         </div>
-      </AbsoluteFill>
-      <Audio src={staticFile("pop.wav")} volume={0.8} />
-    </Sequence>
-    <Sequence from={52} layout="none">
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-        <div style={{ marginTop: 760 }}>
-          <Sticker name="hero" size={330} rotate={4} />
-        </div>
-      </AbsoluteFill>
-      <Audio src={staticFile("pop.wav")} volume={0.8} />
-    </Sequence>
-    <Sequence from={64} layout="none">
-      <AbsoluteFill style={{ alignItems: "flex-end", justifyContent: "center", padding: "0 60px 0 0" }}>
-        <div style={{ marginTop: 480 }}>
-          <Sticker name="parrot" size={290} rotate={11} />
-        </div>
-      </AbsoluteFill>
-      <Audio src={staticFile("pop.wav")} volume={0.8} />
-    </Sequence>
+        <Audio src={staticFile("pop.wav")} volume={0.8} />
+      </Sequence>
+    ))}
   </AbsoluteFill>
 );
 
@@ -423,15 +422,19 @@ const EndCard: React.FC = () => {
         уже в Telegram!
       </div>
 
-      <div style={{ display: "flex", gap: 26, marginTop: 70, alignItems: "center" }}>
-        <Sticker name="corgi" size={270} rotate={-8} delay={12} />
-        <Sticker name="hero" size={320} rotate={3} delay={17} />
-        <Sticker name="parrot" size={270} rotate={9} delay={22} />
+      <div style={{ display: "flex", marginTop: 50, alignItems: "center" }}>
+        <Sticker name="corgi" size={300} rotate={-9} delay={10} />
+        <Sticker name="backpack" size={330} rotate={2} delay={14} />
+        <Sticker name="parrot" size={300} rotate={8} delay={18} />
+      </div>
+      <div style={{ display: "flex", marginTop: -20, gap: 40, alignItems: "center" }}>
+        <Sticker name="chill" size={330} rotate={-5} delay={22} />
+        <Sticker name="smile" size={330} rotate={6} delay={26} />
       </div>
 
       <div
         style={{
-          marginTop: 80,
+          marginTop: 50,
           display: "flex",
           alignItems: "center",
           gap: 36,
